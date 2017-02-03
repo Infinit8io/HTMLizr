@@ -31,7 +31,8 @@ def execute(self):
     args = [c.execute() for c in self.children]
     if len(args) == 1:
         args.insert(0,0)
-    return reduce(operations[self.op], args)
+    #return reduce(operations[self.op], args)
+    return 42
 
 @addToClass(AST.AssignNode)
 def execute(self):
@@ -45,6 +46,40 @@ def execute(self):
 def execute(self):
     while self.children[0].execute() != 0: # Tant qu'il y a des noeuds
         self.children[1].execute() # On exécute
+
+
+@addToClass(AST.ComponentNode)
+def execute(self):
+    for c in self.children:
+        with open("./components/" + c.tok + ".html") as file:
+            data = file.read()
+            print(data)
+
+@addToClass(AST.SonNode)
+def execute(self):
+    print("Execute SonNode")
+    for c in self.children:
+        print("ok")
+        print(c.tok)
+
+
+@addToClass(AST.TagNode)
+def execute(self):
+    print("Execute TagNode")
+    tagline = ""
+    tagline += "<" + self.name # Open tag
+    if self.id is not None: # id if needed
+        tagline += ' id="' + self.id + '"'
+    if self.classe is not None: # class if needed
+        tagline += ' class="' + self.classe + '"'
+    tagline += ">" # Open tag end
+
+    # Inside that div here
+
+    tagline += "<" + self.tok[0] + ">" # End tag
+    print(tagline)
+
+
 
 if __name__ == '__main__':
     from parser5 import parse
