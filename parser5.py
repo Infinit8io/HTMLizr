@@ -24,12 +24,14 @@ def p_statement(p):
         | structure
         | component
         | identifier
-        | expression '''
+        | expression
+        | chevron '''
     p[0] = p[1]
 
+
 def p_chevron(p):
-    ''' chevron : '>' '''
-    p[0] = p[1]
+    ''' chevron : expression '>' expression '''
+    p[0] = AST.SonNode([p[1], p[3]])
 
 def p_statement_print(p):
     ''' statement : PRINT expression '''
@@ -43,9 +45,25 @@ def p_component(p):
     ''' component : COM ':' IDENTIFIER '''
     p[0] = AST.ComponentNode(AST.TokenNode(p[3]))
 
-def p_identifier(p):
+def p_identifier_no_args(p):
     ''' identifier : IDENTIFIER '''
-    p[0] = AST.TagNode(p[1])
+    p[0] = AST.TagNode([p[1], None, None])
+
+def p_identifier_id(p):
+    ''' identifier : IDENTIFIER '#' IDENTIFIER '''
+    p[0] = AST.TagNode([p[1], p[3], None])
+
+def p_identifier_class(p):
+    ''' identifier : IDENTIFIER '.' IDENTIFIER '''
+    p[0] = AST.TagNode([p[1], None, p[3]])
+
+def p_identifier_id_class(p):
+    ''' identifier : IDENTIFIER '#' IDENTIFIER '.' IDENTIFIER '''
+    p[0] = AST.TagNode([p[1], p[3], p[5]])
+    
+def p_identifier_class_id(p):
+    ''' identifier : IDENTIFIER '.' IDENTIFIER '#' IDENTIFIER '''
+    p[0] = AST.TagNode([p[1], p[5], p[3]])
 
 def p_expression_op(p):
     '''expression : expression ADD_OP expression
@@ -57,6 +75,10 @@ def p_expression_num_or_var(p):
         | VARIABLE
         | identifier '''
     p[0] = AST.TokenNode(p[1])
+
+def p_expression_chevron(p):
+    '''expression : chevron'''
+    p[0] = AST.SonNode(p[1])
 
 def p_expression_paren(p):
     '''expression : '(' expression ')' '''

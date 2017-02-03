@@ -1,11 +1,11 @@
 $a = 0;
 com:card;
-a;
-b;
-i;
-div;
+a.test;
+b#lol;
+i#lol.test;
+div.test#lol;
 div * 2;
-div > a;
+div > div > a > i;
 com:carousel;
 while($a-10){
   print $a;

@@ -133,6 +133,21 @@ class PrintNode(Node):
 class WhileNode(Node):
     type = 'while'
 
+class SonNode(Node):
+    type = 'son'
+
+    def asciitree(self, prefix=''):
+        # TODO: Ici on dessine l'arbre, on peut faire tout autre chose comme générer le fichier HTML
+        #result = "%s%s\n" % (prefix, repr(self)+"test")
+        result = ""
+        for c in self.children:
+            if not isinstance(c,Node):
+                result += "%s*** Error: Child of type %r: %r\n" % (prefix,type(c),c)
+                continue
+            result += c.asciitree(prefix)
+            prefix += '|  '
+        return result
+
 class ComponentNode(Node):
     type = 'COMPONENT'
 
@@ -140,10 +155,19 @@ class TagNode(Node):
     type= 'tag'
     def __init__(self, tok):
         Node.__init__(self)
+        self.name = tok[0]
+        self.id = tok[1]
+        self.classe = tok[2]
         self.tok = tok
 
     def __repr__(self):
-        return repr("TAG : "+self.tok)
+        result = "TAG "+self.name
+        if(self.id != None):
+            result += " id="+self.id
+        if(self.classe != None):
+            result += " class="+self.classe
+
+        return repr(result)
 
 class EntryNode(Node):
     type = 'ENTRY'
