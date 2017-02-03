@@ -1,11 +1,22 @@
-$a = 0;
-com:card;
-a.test;
-b#lol;
-i#lol.test;
-div.test#lol;
-div * 2;
-div > div > a > i;
+
+div#principal{ div#top{ a{i}}};
+div{
+div.col1{a};
+com:test;
+$a = 10;
+$b = 11;
+$c = 10 * 2;
+div.col2{a};
+if $a > 10 then;
+$d = 15;
+else;
+$d = 10;
+endif;
+if $a < 1 then
+$x = 13;
+endif;
+$x = 10;
+}
 com:carousel;
 while($a-10){
   print $a;

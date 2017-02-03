@@ -19,6 +19,10 @@ def p_programme_recursive(p):
     ''' programme : statement ';' programme '''
     p[0] = AST.ProgramNode([p[1]]+p[3].children)
 
+def p_programme_fin(p):
+    ''' programme : statement ';' '''
+    p[0] = AST.ProgramNode(p[1])
+
 def p_statement(p):
     ''' statement : assignation
         | structure
@@ -28,9 +32,16 @@ def p_statement(p):
         | chevron '''
     p[0] = p[1]
 
+def p_condition(p):
+    ''' statement : IF expression THEN programme ENDIF'''
+    p[0] = AST.CondNode([p[2], p[4]])
+
+def p_condition_else(p):
+    ''' statement : IF expression THEN programme ELSE programme ENDIF'''
+    p[0] = AST.CondNode([p[2], p[4], p[6]])
 
 def p_chevron(p):
-    ''' chevron : expression '>' expression '''
+    ''' chevron : expression '{' programme '}' '''
     p[0] = AST.SonNode([p[1], p[3]])
 
 def p_statement_print(p):
@@ -60,15 +71,26 @@ def p_identifier_class(p):
 def p_identifier_id_class(p):
     ''' identifier : IDENTIFIER '#' IDENTIFIER '.' IDENTIFIER '''
     p[0] = AST.TagNode([p[1], p[3], p[5]])
-    
+
 def p_identifier_class_id(p):
     ''' identifier : IDENTIFIER '.' IDENTIFIER '#' IDENTIFIER '''
     p[0] = AST.TagNode([p[1], p[5], p[3]])
 
 def p_expression_op(p):
     '''expression : expression ADD_OP expression
-            | expression MUL_OP expression'''
+            | expression MUL_OP expression
+            | expression CMP_OP expression
+            | expression EQ_OP expression
+            | expression NEQ_OP expression'''
     p[0] = AST.OpNode(p[2], [p[1], p[3]])
+
+def p_identifier_mulop_expression(p):
+    '''expression : identifier MUL_OP expression '''
+    p[0] = AST.OpTagNode(p[2], [p[1], p[3]])
+
+def p_expression_mulop_identifier(p):
+    '''expression : expression MUL_OP identifier '''
+    p[0] = AST.OpTagNode(p[2], [p[3], p[1]])
 
 def p_expression_num_or_var(p):
     '''expression : NUMBER
@@ -124,7 +146,7 @@ if __name__ == "__main__":
         import os
         graph = result.makegraphicaltree()
         name = os.path.splitext(sys.argv[1])[0]+'-ast.pdf'
-        graph.write_pdf(name)
-        print ("wrote ast to", name)
+        #graph.write_pdf(name)
+        #print ("wrote ast to", name)
     else:
         print ("Parsing returned no result!")

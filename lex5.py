@@ -3,18 +3,25 @@ import ply.lex as lex
 reserved_words = (
 	'while',
 	'print',
-	'com'
+	'com',
+	'if',
+	'then',
+	'else',
+	'endif'
 )
 
 tokens = (
 	'NUMBER',
 	'ADD_OP',
 	'MUL_OP',
+	'CMP_OP',
+	'EQ_OP',
+	'NEQ_OP',
 	'VARIABLE',
 	'IDENTIFIER',
 ) + tuple(map(lambda s:s.upper(),reserved_words))
 
-literals = '();={}:>.#'
+literals = '();={}:.#'
 
 def t_ADD_OP(t):
 	r'[+-]'
@@ -22,6 +29,18 @@ def t_ADD_OP(t):
 
 def t_MUL_OP(t):
 	r'[*/]'
+	return t
+
+def t_CMP_OP(t):
+	r'[<>]'
+	return t
+
+def t_EQ_OP(t):
+	r'=='
+	return t
+
+def t_NEQ_OP(t):
+	r'!='
 	return t
 
 def t_NUMBER(t):
