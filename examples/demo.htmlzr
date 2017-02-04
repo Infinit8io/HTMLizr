@@ -3,12 +3,18 @@ div."container"{
   p
   com:navbar
   p
-  com:jumbotron
+
+  div."jumbotron"{
+    h1."display-3"@"Bienvenue sur HTMLizr !"
+    p."lead"@"Cette page de demo montre comment utiliser les composants bootstrap"
+    hr."my-4"
+    p@"La syntaxe est si facile que vous n'en croirez pas vos yeux !"
+  }
+
   p
 
   div."row"{
-    div."col-md-6"{com:carousel}
-    div."col-md-6"{com:carousel}
+    div."col-md-6"{com:carousel} * 2
   }
 
   p
@@ -17,9 +23,7 @@ div."container"{
 
   div."container-fluid"{
     div."row"{
-        div."col-md-4"{com:card}
-        div."col-md-4"{com:card}
-        div."col-md-4"{com:card}
+        div."col-md-4"{com:card} * 3
     }
   }
 
@@ -27,9 +31,7 @@ div."container"{
 
   div."container-fluid"{
     div."row"{
-      div."col-md-4"{com:card_inverted}
-      div."col-md-4"{com:card_inverted}
-      div."col-md-4"{com:card_inverted}
+      div."col-md-4"{com:card_inverted} * 3
     }
   }
 
@@ -37,12 +39,24 @@ div."container"{
 
   div."container-fluid"{
     div."row"{
-      div."col-md-6"{com:accordion}
-      div."col-md-6"{com:accordion}
+      div."col-md-6"{com:accordion} * 2
     }
   }
 
   p
-  p
+  $galleryImg = 0
+
+  div."row"{
+    while $galleryImg < 12 do
+      div."col-md-3"{
+        com:card_inverted
+        br
+      }
+      $galleryImg = $galleryImg + 1
+    endwhile
+  }
+
+  br
+  br
 
 }

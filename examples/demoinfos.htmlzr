@@ -1,0 +1,123 @@
+
+div."container"{
+
+  br
+
+  h1."display-3"@"Utilisation d'HTMLizr"
+  p."lead"@"Merci de consulter le rapport pour avoir toutes les informations relatives au possibilites du projet !"
+  p."lead"@"Cet exemple montre ce qu'il est possible de faire avec HTMLizr. La syntaxe est basique et permet de generer des pages HTML complexes"
+
+  code@"div"
+  span@"devient"
+  code@"&lt;div&gt;&lt;/div&gt;"
+
+  br
+
+  code@"div#&quot;myid&quot;"
+  span@"devient"
+  code@"&lt;div id=&quot;myid&quot;&gt;&lt;/div&gt;"
+
+  br
+
+  code@"div@&quot;Mon contenu&quot;"
+  span@"devient"
+  code@"&lt;div&gt;Mon contenu&lt;/div&gt;"
+
+  br
+
+  code@"div.&quot;class1 class2&quot;"
+  span@"devient"
+  code@"&lt;div class=&quot;class1 class2&quot;&gt;&lt;/div&gt;"
+
+
+  hr
+
+  h2@"Tous peut se combiner dans n'importe quel ordre comme ci-dessous."
+  p{
+  code@"div#&quot;myid&quot;.&quot;class1 class2&quot;@&quot;Mon contenu&quot;"
+  span@"devient"
+  code@"&lt;div id=&quot;myid&quot; class=&quot;class1 class2&quot;&gt;Mon contenu&lt;/div&gt;"
+  }
+
+
+    br
+
+    h1@"Exemple de boucles"
+    p."lead"@"Les boucles while permettent d'obtenir des choses comme ci-dessous :"
+
+    div."row"{
+
+      $featured = 0
+
+      while $featured < 4 do
+
+        div."col-md-3"{
+          com:card_featured
+          br
+        }
+
+        $featured = $featured + 1
+
+      endwhile
+    }
+
+    h1@"Exemple de multiplication"
+    p."lead"@"Les multiplications de div permettent aussi d'obtenir ce genre de galeries. Pratique pour les images."
+
+
+    div."row"{
+      div."col-md-3"{
+        com:card_inverted
+        br
+      } * 4
+    }
+
+
+
+
+
+  h1@"Les composants bootstrap sont utilisables"
+
+  p@"Les composants bootstrap peuvent s'inclure dans la page facilement"
+
+  div."row"{
+    div."col-md-4"{
+      code@"com:card"
+      com:card
+    }
+    div."col-md-4"{
+      code@"com:card_list"
+      com:card_list
+    }
+    div."col-md-4"{
+      code@"com:card_featured"
+      com:card_featured
+    }
+  }
+
+
+  h2@"Et de nombreux autres"
+
+
+    p{code@"com:accordion"}
+    p{code@"com:btn_dropdown"}
+    p{code@"com:btn_group"}
+    p{code@"com:card_featured"}
+    p{code@"com:card_inverted"}
+    p{code@"com:card_list"}
+    p{code@"com:card_overlay"}
+    p{code@"com:card"}
+    p{code@"com:carousel_legend"}
+    p{code@"com:carousel"}
+    p{code@"com:full_form"}
+    p{code@"com:jumbotron"}
+    p{code@"com:list_content"}
+    p{code@"com:mini_menu"}
+    p{code@"com:navbar"}
+    p{code@"com:progress"}
+
+
+
+
+
+}

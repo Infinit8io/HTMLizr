@@ -9,9 +9,9 @@ if __name__ == '__main__':
     import sys
 
     parser = OptionParser()
-    parser.add_option("-f", "--inputfile", dest="input_filename", help="Source filename", default="examples/demo1.htmlzr", metavar="INFILE")
-    parser.add_option("-o", "--outputfile", dest="output_filename", help="Destination filename", default="pages/htmlizr.html", metavar="OUTFILE")
-    parser.add_option("-p", "--page", dest="page_mode", help="Fullpage creation mode", default=True, metavar="COMPMODE")
+    parser.add_option("-f", "--inputfile", dest="input_filename", help="HTMLizr source file from which we will generate the HTML code", default="examples/demo1.htmlzr", metavar="INFILE")
+    parser.add_option("-o", "--outputfile", dest="output_filename", help="The destination page filename", default="htmlizr.html", metavar="OUTFILE")
+    parser.add_option("-p", "--page", dest="page_mode", help="Fullpage creation mode", default=True, metavar="PAGEMODE")
     parser.add_option("-c", "--comp", dest="comp_mode", help="Composant creation mode", metavar="COMPMODE")
 
     (options, args) = parser.parse_args()
@@ -42,4 +42,3 @@ if __name__ == '__main__':
     else:
         f.write(generatedHTML)
         f.close()
-      # you can omit in most cases as the destructor will call it
