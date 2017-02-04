@@ -14,7 +14,7 @@ def p_programme_recursive(p):
     p[0] = AST.ProgramNode([p[1]]+p[2].children)
 
 def p_programme_fin(p):
-    ''' programme : statement ';' '''
+    ''' programme : statement NEWLINE '''
     p[0] = AST.ProgramNode(p[1])
 
 def p_statement(p):
@@ -40,7 +40,8 @@ def p_condition_else(p):
 
 def p_chevron(p):
     ''' chevron : identifier '{' programme '}' '''
-    p[0] = AST.SonNode([p[1], p[3]])
+    p[1].setChildren(p[3])
+    p[0] = p[1]
 
 def p_statement_print(p):
     ''' statement : PRINT expression '''
@@ -119,12 +120,22 @@ def p_identifier_value_class_id(p):
     p[0] = AST.TagNode([p[1], p[7], p[5], p[2]])
 
 def p_identifier_mulop_expression(p):
-    '''expression : identifier MUL_OP expression '''
+    '''expression : identifier MUL_OP expression
+            | component MUL_OP expression'''
     p[0] = AST.OpTagNode(p[2], [p[1], p[3]])
 
 def p_expression_mulop_identifier(p):
-    '''expression : expression MUL_OP identifier '''
+    '''expression : expression MUL_OP identifier
+            | expression MUL_OP component'''
     p[0] = AST.OpTagNode(p[2], [p[3], p[1]])
+
+def p_expression_chevron(p):
+    '''chevron : expression MUL_OP chevron '''
+    p[0] = AST.OpTagNode(p[2], [p[3], p[1]])
+
+def p_chevron_expression(p):
+    '''chevron : chevron MUL_OP expression '''
+    p[0] = AST.OpTagNode(p[2], [p[1], p[3]])
 
 def p_expression_op(p):
     '''expression : expression ADD_OP expression
@@ -142,10 +153,6 @@ def p_expression_num_or_var(p):
 def p_expression_string(p):
     '''expression : STRING '''
     p[0] = AST.TokenNode(p[1])
-
-def p_expression_chevron(p):
-    '''expression : chevron'''
-    p[0] = AST.SonNode(p[1])
 
 def p_expression_paren(p):
     '''expression : '(' expression ')' '''
