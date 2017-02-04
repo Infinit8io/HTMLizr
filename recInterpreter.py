@@ -77,25 +77,6 @@ def execute(self):
             vars["result"] += data
             print(data)
 
-@addToClass(AST.SonNode)
-def execute(self):
-    firstChild = self.children.pop(0)
-    tagline = ""
-    tagline += "<" + firstChild.name # Open tag
-    if firstChild.id is not None: # id if needed
-        tagline += ' id=' + firstChild.id + ''
-    if firstChild.classe is not None: # class if needed
-        tagline += ' class=' + firstChild.classe + ''
-    tagline += ">" # Open tag end
-    vars["result"] += tagline
-    print(tagline)
-    if len(self.children) > 0:
-        for c in self.children:
-            c.execute()
-        vars["result"] += "</"+firstChild.name+">"
-        print("</"+firstChild.name+">\n")
-
-
 @addToClass(AST.TagNode)
 def execute(self):
     if self is not None:
@@ -108,7 +89,11 @@ def execute(self):
         tagline += ">" # Open tag end
         if self.value is not None:
             tagline += (self.value).replace("\"", "")
-        tagline += "</" + self.tok[0] + ">\n" # End tag
+        vars["result"] += tagline;
+        print(tagline)
+        for c in self.children:
+            c.execute()
+        tagline = "</" + self.tok[0] + ">\n" # End tag
         vars["result"] += tagline;
         print(tagline)
 

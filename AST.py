@@ -154,38 +154,12 @@ class WhileNode(Node):
 class NewLineNode(Node):
     type = 'newline'
 
-class SonNode(Node):
-    type = 'son'
-    def __init__(self, children=None):
-        self.tok = children
-        self.name = children[0].name
-        self.ID = str(Node.count)
-        Node.count+=1
-        if not children: self.children = []
-        elif hasattr(children,'__len__'):
-            self.children = children
-        else:
-            self.children = [children]
-        self.next = []
-
-    def asciitree(self, prefix=''):
-        # TODO: Ici on dessine l'arbre, on peut faire tout autre chose comme générer le fichier HTML
-        #result = "%s%s\n" % (prefix, repr(self)+"test")
-        result = ""
-        for c in self.children:
-            if not isinstance(c,Node):
-                result += "%s*** Error: Child of type %r: %r\n" % (prefix,type(c),c)
-                continue
-            result += c.asciitree(prefix)
-            prefix += '|  '
-        return result
-
 class ComponentNode(Node):
     type = 'COMPONENT'
 
 class TagNode(Node):
     type= 'tag'
-    def __init__(self, tok):
+    def __init__(self, tok, lol=None):
         Node.__init__(self)
         self.name = tok[0]
         self.id = tok[1]
@@ -201,6 +175,8 @@ class TagNode(Node):
             result += " class="+self.classe
 
         return repr(result)
+    def setChildren(self, program):
+        self.children = [program]
 
 class EntryNode(Node):
     type = 'ENTRY'
