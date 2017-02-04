@@ -1,0 +1,48 @@
+div."container"{
+
+  p
+  com:navbar
+  p
+  com:jumbotron
+  p
+
+  div."row"{
+    div."col-md-6"{com:carousel}
+    div."col-md-6"{com:carousel}
+  }
+
+  p
+  div."alert alert-success"@"This is an info"
+  p
+
+  div."container-fluid"{
+    div."row"{
+        div."col-md-4"{com:card}
+        div."col-md-4"{com:card}
+        div."col-md-4"{com:card}
+    }
+  }
+
+  p
+
+  div."container-fluid"{
+    div."row"{
+      div."col-md-4"{com:card_inverted}
+      div."col-md-4"{com:card_inverted}
+      div."col-md-4"{com:card_inverted}
+    }
+  }
+
+  p
+
+  div."container-fluid"{
+    div."row"{
+      div."col-md-6"{com:accordion}
+      div."col-md-6"{com:accordion}
+    }
+  }
+
+  p
+  p
+
+}
