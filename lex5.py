@@ -7,7 +7,9 @@ reserved_words = (
 	'if',
 	'then',
 	'else',
-	'endif'
+	'endif',
+	'do',
+	'endwhile'
 )
 
 tokens = (
@@ -19,9 +21,11 @@ tokens = (
 	'NEQ_OP',
 	'VARIABLE',
 	'IDENTIFIER',
+	'STRING',
+	'NEWLINE',
 ) + tuple(map(lambda s:s.upper(),reserved_words))
 
-literals = '();={}:.#'
+literals = '();={}:.#@'
 
 def t_ADD_OP(t):
 	r'[+-]'
@@ -62,9 +66,14 @@ def t_IDENTIFIER(t):
 		t.type = t.value.upper()
 	return t
 
-def t_newline(t):
+def t_STRING(t):
+	r'\"(.*?)\"'
+	return t
+
+def t_NEWLINE(t):
 	r'\n+'
 	t.lexer.lineno += len(t.value)
+	return t
 
 t_ignore  = ' \t'
 

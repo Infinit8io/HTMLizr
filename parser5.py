@@ -5,19 +5,13 @@ import AST
 
 vars = {}
 
-balises = [
-    'a',
-    'b',
-    'i',
-]
-
 def p_programme_statement(p):
     ''' programme : statement '''
     p[0] = AST.ProgramNode(p[1])
 
 def p_programme_recursive(p):
-    ''' programme : statement ';' programme '''
-    p[0] = AST.ProgramNode([p[1]]+p[3].children)
+    ''' programme : statement programme '''
+    p[0] = AST.ProgramNode([p[1]]+p[2].children)
 
 def p_programme_fin(p):
     ''' programme : statement ';' '''
@@ -32,16 +26,20 @@ def p_statement(p):
         | chevron '''
     p[0] = p[1]
 
+def p_statement_newline(p):
+    ''' statement : NEWLINE '''
+    p[0] = AST.NewLineNode()
+
 def p_condition(p):
-    ''' statement : IF expression THEN programme ENDIF'''
-    p[0] = AST.CondNode([p[2], p[4]])
+    ''' statement : IF expression THEN NEWLINE programme ENDIF'''
+    p[0] = AST.CondNode([p[2], p[5]])
 
 def p_condition_else(p):
-    ''' statement : IF expression THEN programme ELSE programme ENDIF'''
-    p[0] = AST.CondNode([p[2], p[4], p[6]])
+    ''' statement : IF expression THEN NEWLINE programme ELSE NEWLINE programme ENDIF'''
+    p[0] = AST.CondNode([p[2], p[5], p[8]])
 
 def p_chevron(p):
-    ''' chevron : expression '{' programme '}' '''
+    ''' chevron : identifier '{' programme '}' '''
     p[0] = AST.SonNode([p[1], p[3]])
 
 def p_statement_print(p):
@@ -49,8 +47,8 @@ def p_statement_print(p):
     p[0] = AST.PrintNode(p[2])
 
 def p_structure(p):
-    ''' structure : WHILE expression '{' programme '}' '''
-    p[0] = AST.WhileNode([p[2],p[4]])
+    ''' structure : WHILE expression DO NEWLINE programme ENDWHILE '''
+    p[0] = AST.WhileNode([p[2],p[5]])
 
 def p_component(p):
     ''' component : COM ':' IDENTIFIER '''
@@ -58,31 +56,67 @@ def p_component(p):
 
 def p_identifier_no_args(p):
     ''' identifier : IDENTIFIER '''
-    p[0] = AST.TagNode([p[1], None, None])
+    p[0] = AST.TagNode([p[1], None, None, None])
 
 def p_identifier_id(p):
-    ''' identifier : IDENTIFIER '#' IDENTIFIER '''
-    p[0] = AST.TagNode([p[1], p[3], None])
+    ''' identifier : IDENTIFIER '#' STRING '''
+    p[0] = AST.TagNode([p[1], p[3], None, None])
 
 def p_identifier_class(p):
-    ''' identifier : IDENTIFIER '.' IDENTIFIER '''
-    p[0] = AST.TagNode([p[1], None, p[3]])
+    ''' identifier : IDENTIFIER '.' STRING '''
+    p[0] = AST.TagNode([p[1], None, p[3], None])
+
+def p_identifier_value(p):
+    ''' identifier : IDENTIFIER '@' STRING '''
+    p[0] = AST.TagNode([p[1], None, None, p[3]])
 
 def p_identifier_id_class(p):
-    ''' identifier : IDENTIFIER '#' IDENTIFIER '.' IDENTIFIER '''
-    p[0] = AST.TagNode([p[1], p[3], p[5]])
+    ''' identifier : IDENTIFIER '#' STRING '.' STRING '''
+    p[0] = AST.TagNode([p[1], p[3], p[5], None])
 
 def p_identifier_class_id(p):
-    ''' identifier : IDENTIFIER '.' IDENTIFIER '#' IDENTIFIER '''
-    p[0] = AST.TagNode([p[1], p[5], p[3]])
+    ''' identifier : IDENTIFIER '.' STRING '#' STRING '''
+    p[0] = AST.TagNode([p[1], p[5], p[3], None])
 
-def p_expression_op(p):
-    '''expression : expression ADD_OP expression
-            | expression MUL_OP expression
-            | expression CMP_OP expression
-            | expression EQ_OP expression
-            | expression NEQ_OP expression'''
-    p[0] = AST.OpNode(p[2], [p[1], p[3]])
+def p_identifier_id_value(p):
+    ''' identifier : IDENTIFIER '#' STRING '@' STRING '''
+    p[0] = AST.TagNode([p[1], p[3], None, p[5]])
+
+def p_identifier_value_id(p):
+    ''' identifier : IDENTIFIER '@' STRING '#' STRING '''
+    p[0] = AST.TagNode([p[1], p[5], None, p[3]])
+
+def p_identifier_class_value(p):
+    ''' identifier : IDENTIFIER '.' STRING '@' STRING '''
+    p[0] = AST.TagNode([p[1], None, p[3], p[5]])
+
+def p_identifier_value_class(p):
+    ''' identifier : IDENTIFIER '@' STRING '.' STRING '''
+    p[0] = AST.TagNode([p[1], None, p[5], p[3]])
+
+def p_identifier_id_class_value(p):
+    ''' identifier : IDENTIFIER '#' STRING '.' STRING '@' STRING '''
+    p[0] = AST.TagNode([p[1], p[3], p[5], p[7]])
+
+def p_identifier_id_value_class(p):
+    ''' identifier : IDENTIFIER '#' STRING '@' STRING '.' STRING '''
+    p[0] = AST.TagNode([p[1], p[3], p[7], p[5]])
+
+def p_identifier_class_id_value(p):
+    ''' identifier : IDENTIFIER '.' STRING '#' STRING '@' STRING '''
+    p[0] = AST.TagNode([p[1], p[5], p[3], p[7]])
+
+def p_identifier_class_value_id(p):
+    ''' identifier : IDENTIFIER '.' STRING '@' STRING '#' STRING '''
+    p[0] = AST.TagNode([p[1], p[7], p[3], p[5]])
+
+def p_identifier_value_id_class(p):
+    ''' identifier : IDENTIFIER '@' STRING '#' STRING '.' STRING '''
+    p[0] = AST.TagNode([p[1], p[5], p[7], p[3]])
+
+def p_identifier_value_class_id(p):
+    ''' identifier : IDENTIFIER '@' STRING '.' STRING '#' STRING '''
+    p[0] = AST.TagNode([p[1], p[7], p[5], p[2]])
 
 def p_identifier_mulop_expression(p):
     '''expression : identifier MUL_OP expression '''
@@ -92,10 +126,21 @@ def p_expression_mulop_identifier(p):
     '''expression : expression MUL_OP identifier '''
     p[0] = AST.OpTagNode(p[2], [p[3], p[1]])
 
+def p_expression_op(p):
+    '''expression : expression ADD_OP expression
+            | expression MUL_OP expression
+            | expression CMP_OP expression
+            | expression EQ_OP expression
+            | expression NEQ_OP expression'''
+    p[0] = AST.OpNode(p[2], [p[1], p[3]])
+
 def p_expression_num_or_var(p):
     '''expression : NUMBER
-        | VARIABLE
-        | identifier '''
+        | VARIABLE '''
+    p[0] = AST.TokenNode(p[1])
+
+def p_expression_string(p):
+    '''expression : STRING '''
     p[0] = AST.TokenNode(p[1])
 
 def p_expression_chevron(p):
@@ -119,10 +164,7 @@ def p_error(p):
         print ("Syntax error in line %d" % p.lineno)
         yacc.errok()
     else:
-        print ("Sytax error: unexpected end of file!")
-
-
-
+        print ("Syntax error: unexpected end of file!")
 
 precedence = (
     ('left', 'ADD_OP'),

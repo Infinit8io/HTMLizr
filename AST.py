@@ -109,6 +109,9 @@ class TokenNode(Node):
         Node.__init__(self)
         self.tok = tok
 
+    def __str__(self):
+        return str(self.tok)
+
     def __repr__(self):
         return repr(self.tok)
 
@@ -144,12 +147,26 @@ class PrintNode(Node):
 
 class CondNode(Node):
     type= 'condition'
-    
+
 class WhileNode(Node):
     type = 'while'
 
+class NewLineNode(Node):
+    type = 'newline'
+
 class SonNode(Node):
     type = 'son'
+    def __init__(self, children=None):
+        self.tok = children
+        self.name = children[0].name
+        self.ID = str(Node.count)
+        Node.count+=1
+        if not children: self.children = []
+        elif hasattr(children,'__len__'):
+            self.children = children
+        else:
+            self.children = [children]
+        self.next = []
 
     def asciitree(self, prefix=''):
         # TODO: Ici on dessine l'arbre, on peut faire tout autre chose comme générer le fichier HTML
@@ -173,6 +190,7 @@ class TagNode(Node):
         self.name = tok[0]
         self.id = tok[1]
         self.classe = tok[2]
+        self.value = tok[3]
         self.tok = tok
 
     def __repr__(self):
