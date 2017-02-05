@@ -58,16 +58,14 @@ def execute(self):
 def execute(self):
     vars[self.children[0].tok] = self.children[1].execute()
 
-@addToClass(AST.PrintNode)
-def execute(self):
-    vars["result"] += self.children[0].execute()
-    print(self.children[0].execute())
-
 @addToClass(AST.WhileNode)
 def execute(self):
     while self.children[0].execute() != 0: # Tant qu'il y a des noeuds
         self.children[1].execute() # On exécute
 
+@addToClass(AST.PrintNode)
+def execute(self):
+    vars["result"] += str(self.children[0].execute()).replace("\"", "")
 
 @addToClass(AST.ComponentNode)
 def execute(self):
@@ -75,27 +73,52 @@ def execute(self):
         with open("./components/" + c.tok + ".html") as file:
             data = file.read()
             vars["result"] += data
-            print(data)
 
 @addToClass(AST.TagNode)
 def execute(self):
     if self is not None:
-        tagline = ""
-        tagline += "<" + self.name # Open tag
-        if self.id is not None: # id if needed
-            tagline += ' id=' + self.id + ''
-        if self.classe is not None: # class if needed
-            tagline += ' class=' + self.classe + ''
-        tagline += ">" # Open tag end
-        if self.value is not None:
-            tagline += (self.value).replace("\"", "")
-        vars["result"] += tagline;
-        print(tagline)
+        str = ""
+        tagname = None
+        value = None
+        program = None
         for c in self.children:
-            c.execute()
-        tagline = "</" + self.tok[0] + ">\n" # End tag
-        vars["result"] += tagline;
-        print(tagline)
+            if isinstance(c, AST.TagNameNode):
+                tagname = c.execute()
+                str += "<"+tagname
+            if isinstance(c, AST.IdNode) or isinstance(c, AST.ClassNode):
+                str += c.execute()
+            if isinstance(c, AST.ContentNode):
+                value = c.execute()
+            if isinstance(c, AST.ProgramNode):
+                program = c
+        str += ">"
+        if value is not None:
+            str += value.replace("\"", "")
+        vars["result"] += str;
+        str = ""
+        if program is not None:
+            result = program.execute()
+            if result is not None:
+                str += result
+        str += "</"+tagname+">"
+        vars["result"] += str;
+
+@addToClass(AST.TagNameNode)
+def execute(self):
+    return self.children[0].execute()
+
+
+@addToClass(AST.IdNode)
+def execute(self):
+    return " id=\""+str(self.children[0].execute()).replace("\"", "")+"\""
+
+@addToClass(AST.ClassNode)
+def execute(self):
+    return " class=\""+str(self.children[0].execute()).replace("\"", "")+"\""
+
+@addToClass(AST.ContentNode)
+def execute(self):
+    return str(self.children[0].execute())
 
 @addToClass(AST.CondNode)
 def execute(self):
@@ -117,3 +140,4 @@ if __name__ == '__main__':
     prog = open(sys.argv[1]).read()
     ast = parse(prog)
     ast.execute()
+    print(vars["result"])

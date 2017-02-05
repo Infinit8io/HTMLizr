@@ -20,7 +20,7 @@ tokens = (
 	'EQ_OP',
 	'NEQ_OP',
 	'VARIABLE',
-	'IDENTIFIER',
+	'TAG',
 	'STRING',
 	'NEWLINE',
 ) + tuple(map(lambda s:s.upper(),reserved_words))
@@ -60,7 +60,7 @@ def t_VARIABLE(t):
 	r'\$[A-Za-z_]\w*'
 	return t
 
-def t_IDENTIFIER(t):
+def t_TAG(t):
 	r'[A-Za-z_]\w*'
 	if t.value in reserved_words:
 		t.type = t.value.upper()
