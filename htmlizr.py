@@ -5,7 +5,7 @@ from recInterpreter import *
 
 
 if __name__ == '__main__':
-    from parser import parse
+    from parserHTMLizr import parse
     import sys
 
     parser = OptionParser()

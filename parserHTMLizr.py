@@ -13,6 +13,11 @@ def p_programme_recursive(p):
     ''' programme : statement programme '''
     p[0] = AST.ProgramNode([p[1]]+p[2].children)
 
+def p_programme_bracket(p):
+    ''' programme : '(' programme ')' '''
+    print("mdr")
+    p[0] = AST.ProgramNode(p[2])
+
 def p_statement(p):
     ''' statement : assignation
         | structure
@@ -118,7 +123,7 @@ def p_expression_num_or_var(p):
 
 def p_expression_string(p):
     '''expression : STRING '''
-    p[0] = AST.TokenNode(p[1])
+    p[0] = AST.TokenNode(p[1].replace("\"", ""))
 
 def p_expression_paren(p):
     '''expression : '(' expression ')' '''
