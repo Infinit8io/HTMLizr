@@ -1,22 +1,10 @@
-# coding: latin-1
-
-''' Petit module utilitaire pour la construction, la manipulation et la
-repr�sentation d'arbres syntaxiques abstraits.
-
-S�rement plein de bugs et autres surprises. � prendre comme un
-"work in progress"...
-Notamment, l'utilisation de pydot pour repr�senter un arbre syntaxique cousu
-est une utilisation un peu "limite" de graphviz. �a marche, mais le layout n'est
-pas toujours optimal...
-'''
-
 import sys
 sys.path.insert(0, './pydot-1.0.3')
 sys.path.insert(0, './pyparsing-1.5.5')
 import pydot
 import AST
 import ply.yacc as yacc
-from lex5 import tokens
+from lex import tokens
 
 import pydot
 
@@ -38,7 +26,6 @@ class Node:
         self.next.append(next)
 
     def asciitree(self, prefix=''):
-        # TODO: Ici on dessine l'arbre, on peut faire tout autre chose comme générer le fichier HTML
         result = "%s%s\n" % (prefix, repr(self))
         prefix += '|  '
         for c in self.children:
@@ -115,6 +102,24 @@ class TokenNode(Node):
     def __repr__(self):
         return repr(self.tok)
 
+class TagNode(Node):
+    type = 'identifier'
+
+    def addChild(self, token):
+        self.children.append(token)
+
+class TagNameNode(Node):
+    type = 'TagName'
+
+class ClassNode(Node):
+    type = 'class'
+
+class IdNode(Node):
+    type = 'id'
+
+class ContentNode(Node):
+    type = 'content'
+
 class OpNode(Node):
     def __init__(self, op, children):
         Node.__init__(self,children)
@@ -156,27 +161,6 @@ class NewLineNode(Node):
 
 class ComponentNode(Node):
     type = 'COMPONENT'
-
-class TagNode(Node):
-    type= 'tag'
-    def __init__(self, tok, lol=None):
-        Node.__init__(self)
-        self.name = tok[0]
-        self.id = tok[1]
-        self.classe = tok[2]
-        self.value = tok[3]
-        self.tok = tok
-
-    def __repr__(self):
-        result = "TAG "+self.name
-        if(self.id != None):
-            result += " id="+self.id
-        if(self.classe != None):
-            result += " class="+self.classe
-
-        return repr(result)
-    def setChildren(self, program):
-        self.children = [program]
 
 class EntryNode(Node):
     type = 'ENTRY'

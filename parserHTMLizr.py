@@ -1,6 +1,6 @@
 import ply.yacc as yacc
 
-from lex5 import tokens
+from lex import tokens
 import AST
 
 vars = {}
@@ -12,10 +12,6 @@ def p_programme_statement(p):
 def p_programme_recursive(p):
     ''' programme : statement programme '''
     p[0] = AST.ProgramNode([p[1]]+p[2].children)
-
-def p_programme_fin(p):
-    ''' programme : statement NEWLINE '''
-    p[0] = AST.ProgramNode(p[1])
 
 def p_statement(p):
     ''' statement : assignation
@@ -40,7 +36,7 @@ def p_condition_else(p):
 
 def p_chevron(p):
     ''' chevron : identifier '{' programme '}' '''
-    p[1].setChildren(p[3])
+    p[1].addChild(p[3])
     p[0] = p[1]
 
 def p_statement_print(p):
@@ -52,72 +48,42 @@ def p_structure(p):
     p[0] = AST.WhileNode([p[2],p[5]])
 
 def p_component(p):
-    ''' component : COM ':' IDENTIFIER '''
+    ''' component : COM ':' TAG '''
     p[0] = AST.ComponentNode(AST.TokenNode(p[3]))
 
-def p_identifier_no_args(p):
-    ''' identifier : IDENTIFIER '''
-    p[0] = AST.TagNode([p[1], None, None, None])
+def p_identifier_three_element(p):
+    ''' identifier : TAG elem_parts elem_parts elem_parts'''
+    p[0] = AST.TagNode([AST.TagNameNode(AST.TokenNode(p[1])), p[2], p[3], p[4]])
 
-def p_identifier_id(p):
-    ''' identifier : IDENTIFIER '#' STRING '''
-    p[0] = AST.TagNode([p[1], p[3], None, None])
+def p_identifier_two_element(p):
+    ''' identifier : TAG elem_parts elem_parts'''
+    p[0] = AST.TagNode([AST.TagNameNode(AST.TokenNode(p[1])), p[2], p[3]])
 
-def p_identifier_class(p):
-    ''' identifier : IDENTIFIER '.' STRING '''
-    p[0] = AST.TagNode([p[1], None, p[3], None])
+def p_identifier_one_element(p):
+    ''' identifier : TAG elem_parts '''
+    p[0] = AST.TagNode([AST.TagNameNode(AST.TokenNode(p[1])), p[2]])
 
-def p_identifier_value(p):
-    ''' identifier : IDENTIFIER '@' STRING '''
-    p[0] = AST.TagNode([p[1], None, None, p[3]])
+def p_identifier(p):
+    ''' identifier : TAG '''
+    p[0] = AST.TagNode(AST.TagNameNode(AST.TokenNode(p[1])))
 
-def p_identifier_id_class(p):
-    ''' identifier : IDENTIFIER '#' STRING '.' STRING '''
-    p[0] = AST.TagNode([p[1], p[3], p[5], None])
+def p_elements_identifier(p):
+    '''elem_parts : class
+        | id
+        | content '''
+    p[0] = p[1]
 
-def p_identifier_class_id(p):
-    ''' identifier : IDENTIFIER '.' STRING '#' STRING '''
-    p[0] = AST.TagNode([p[1], p[5], p[3], None])
+def p_class(p):
+    '''class : '.' expression '''
+    p[0] = AST.ClassNode(AST.TokenNode(p[2]))
 
-def p_identifier_id_value(p):
-    ''' identifier : IDENTIFIER '#' STRING '@' STRING '''
-    p[0] = AST.TagNode([p[1], p[3], None, p[5]])
+def p_id(p):
+    '''id : '#' expression '''
+    p[0] = AST.IdNode(AST.TokenNode(p[2]))
 
-def p_identifier_value_id(p):
-    ''' identifier : IDENTIFIER '@' STRING '#' STRING '''
-    p[0] = AST.TagNode([p[1], p[5], None, p[3]])
-
-def p_identifier_class_value(p):
-    ''' identifier : IDENTIFIER '.' STRING '@' STRING '''
-    p[0] = AST.TagNode([p[1], None, p[3], p[5]])
-
-def p_identifier_value_class(p):
-    ''' identifier : IDENTIFIER '@' STRING '.' STRING '''
-    p[0] = AST.TagNode([p[1], None, p[5], p[3]])
-
-def p_identifier_id_class_value(p):
-    ''' identifier : IDENTIFIER '#' STRING '.' STRING '@' STRING '''
-    p[0] = AST.TagNode([p[1], p[3], p[5], p[7]])
-
-def p_identifier_id_value_class(p):
-    ''' identifier : IDENTIFIER '#' STRING '@' STRING '.' STRING '''
-    p[0] = AST.TagNode([p[1], p[3], p[7], p[5]])
-
-def p_identifier_class_id_value(p):
-    ''' identifier : IDENTIFIER '.' STRING '#' STRING '@' STRING '''
-    p[0] = AST.TagNode([p[1], p[5], p[3], p[7]])
-
-def p_identifier_class_value_id(p):
-    ''' identifier : IDENTIFIER '.' STRING '@' STRING '#' STRING '''
-    p[0] = AST.TagNode([p[1], p[7], p[3], p[5]])
-
-def p_identifier_value_id_class(p):
-    ''' identifier : IDENTIFIER '@' STRING '#' STRING '.' STRING '''
-    p[0] = AST.TagNode([p[1], p[5], p[7], p[3]])
-
-def p_identifier_value_class_id(p):
-    ''' identifier : IDENTIFIER '@' STRING '.' STRING '#' STRING '''
-    p[0] = AST.TagNode([p[1], p[7], p[5], p[2]])
+def p_content(p):
+    '''content : '@' expression '''
+    p[0] = AST.ContentNode(AST.TokenNode(p[2]))
 
 def p_identifier_mulop_expression(p):
     '''expression : identifier MUL_OP expression
@@ -195,7 +161,7 @@ if __name__ == "__main__":
         import os
         graph = result.makegraphicaltree()
         name = os.path.splitext(sys.argv[1])[0]+'-ast.pdf'
-        #graph.write_pdf(name)
+        graph.write_pdf(name)
         #print ("wrote ast to", name)
     else:
         print ("Parsing returned no result!")
