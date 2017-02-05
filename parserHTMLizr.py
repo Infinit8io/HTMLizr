@@ -65,9 +65,6 @@ def p_component(p):
     ''' component : COM ':' TAG '''
     p[0] = AST.ComponentNode(AST.TokenNode(p[3]))
 
-
-
-
 # Identifier for tags properties such as ID, classes and content value
 # When three elements are specified
 def p_identifier_three_element(p):
@@ -89,6 +86,13 @@ def p_identifier(p):
     ''' identifier : TAG '''
     p[0] = AST.TagNode(AST.TagNameNode(AST.TokenNode(p[1])))
 
+# Argument for the value in the class, id, value for a tag.
+def p_arguments(p):
+    ''' argument : STRING
+            | VARIABLE
+            | NUMBER '''
+    p[0] = p[1].replace("\"", "")
+
 # Elements parts for a tag. Can be a class, ID or content
 # Used in the previous p_identifier for tags
 def p_elements_identifier(p):
@@ -99,21 +103,18 @@ def p_elements_identifier(p):
 
 # Tag class definition. Part of the elem_parts identifier
 def p_class(p):
-    '''class : '.' expression '''
+    '''class : '.' argument '''
     p[0] = AST.ClassNode(AST.TokenNode(p[2]))
 
 # Tag ID definition. Part of the elem_parts identifier
 def p_id(p):
-    '''id : '#' expression '''
+    '''id : '#' argument '''
     p[0] = AST.IdNode(AST.TokenNode(p[2]))
 
 # Tag content definition. Part of the elem_parts identifier
 def p_content(p):
-    '''content : '@' expression '''
+    '''content : '@' argument '''
     p[0] = AST.ContentNode(AST.TokenNode(p[2]))
-
-
-
 
 # Mathematical expression for multiplication in the xxx * 2 way
 def p_identifier_mulop_expression(p):
@@ -127,8 +128,6 @@ def p_expression_mulop_identifier(p):
             | expression MUL_OP component'''
     p[0] = AST.OpTagNode(p[2], [p[3], p[1]])
 
-
-
 # Mathematical expression for imbrication multiplication
 def p_expression_imbrication(p):
     '''imbrication : expression MUL_OP imbrication '''
@@ -137,7 +136,6 @@ def p_expression_imbrication(p):
 def p_imbrication_expression(p):
     '''imbrication : imbrication MUL_OP expression '''
     p[0] = AST.OpTagNode(p[2], [p[1], p[3]])
-
 
 # Mathematical expressions
 def p_expression_op(p):

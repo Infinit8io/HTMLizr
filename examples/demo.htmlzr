@@ -3,6 +3,7 @@ div."container"{
   p
   com:navbar
   p
+  p{a."test" * 2}
 
   div."jumbotron"{
     h1."display-3"@"Bienvenue sur HTMLizr !"

@@ -1,1 +1,4 @@
-div{a}
+div."class1"{p@"Paragraphe dans une div"} * 3
+div
+a
+p
