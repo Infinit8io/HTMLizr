@@ -8,6 +8,7 @@ if __name__ == '__main__':
     from parser import parse
     import sys
 
+    # Manage the args
     parser = OptionParser()
     parser.add_option("-f", "--inputfile", dest="input_filename", help="HTMLizr source file from which we will generate the HTML code", default="examples/demo1.htmlzr", metavar="INFILE")
     parser.add_option("-o", "--outputfile", dest="output_filename", help="The destination page filename", default="htmlizr.html", metavar="OUTFILE")
@@ -18,8 +19,8 @@ if __name__ == '__main__':
 
     # Open file to read
     prog = open(options.input_filename).read()
-    ast = parse(prog)
-    ast.execute()
+    ast = parse(prog) # Parse the code
+    ast.execute() # Execution
 
     # Get the generated HTML
     generatedHTML = vars["result"]
@@ -32,13 +33,14 @@ if __name__ == '__main__':
         # Open file to write in
         f = open("pages/" + options.output_filename, 'w')
 
-    # Si on doit créer une page complète utilisable
+    # If we have to create a fullpage with html headers
     if options.page_mode:
-        header = open("components/header.html").read()
-        footer = open("components/footer.html").read()
-        f.write(header + generatedHTML + footer)
-        webbrowser.open(os.path.abspath("pages/" + options.output_filename), new=2)
+        header = open("components/header.html").read() # Get the HTML header page
+        footer = open("components/footer.html").read() # Get the HTML footer page
+        f.write(header + generatedHTML + footer) # Sandwich of content between header and footer
+        webbrowser.open(os.path.abspath("pages/" + options.output_filename), new=2) # Open the browser with the result
         f.close()
+    # If it's a simple component
     else:
         f.write(generatedHTML)
         f.close()
