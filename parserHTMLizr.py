@@ -1,6 +1,6 @@
 import ply.yacc as yacc
 
-from lex5 import tokens
+from lex import tokens
 import AST
 
 vars = {}
@@ -66,7 +66,6 @@ def p_identifier_one_element(p):
 def p_identifier(p):
     ''' identifier : TAG '''
     p[0] = AST.TagNode(AST.TagNameNode(AST.TokenNode(p[1])))
-
 
 def p_elements_identifier(p):
     '''elem_parts : class
@@ -162,7 +161,7 @@ if __name__ == "__main__":
         import os
         graph = result.makegraphicaltree()
         name = os.path.splitext(sys.argv[1])[0]+'-ast.pdf'
-        #graph.write_pdf(name)
+        graph.write_pdf(name)
         #print ("wrote ast to", name)
     else:
         print ("Parsing returned no result!")

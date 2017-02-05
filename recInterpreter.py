@@ -133,7 +133,7 @@ def execute(self):
             self.children[2].execute()
 
 if __name__ == '__main__':
-    from parser5 import parse
+    from parserHTMLizr import parse
     import sys
     print("Started Program")
     result = ""

@@ -1,22 +1,10 @@
-# coding: latin-1
-
-''' Petit module utilitaire pour la construction, la manipulation et la
-repr�sentation d'arbres syntaxiques abstraits.
-
-S�rement plein de bugs et autres surprises. � prendre comme un
-"work in progress"...
-Notamment, l'utilisation de pydot pour repr�senter un arbre syntaxique cousu
-est une utilisation un peu "limite" de graphviz. �a marche, mais le layout n'est
-pas toujours optimal...
-'''
-
 import sys
 sys.path.insert(0, './pydot-1.0.3')
 sys.path.insert(0, './pyparsing-1.5.5')
 import pydot
 import AST
 import ply.yacc as yacc
-from lex5 import tokens
+from lex import tokens
 
 import pydot
 
