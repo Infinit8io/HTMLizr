@@ -30,6 +30,16 @@ div."container"{
   code@"&lt;div class=&quot;class1 class2&quot;&gt;&lt;/div&gt;"
 
 
+  br
+
+  p@"On peut aussi utiliser les variables pour les proprietes de balises."
+  code@"$v = &quot;class1 class2&quot;<br/>div.$v"
+  br
+  span@"devient"
+  br
+  code@"&lt;div class=&quot;class1 class2&quot;&gt;&lt;/div&gt;"
+
+
   hr
 
   h2@"Tous peut se combiner dans n'importe quel ordre comme ci-dessous."
@@ -38,6 +48,25 @@ div."container"{
   span@"devient"
   code@"&lt;div id=&quot;myid&quot; class=&quot;class1 class2&quot;&gt;Mon contenu&lt;/div&gt;"
   }
+
+
+    h1@"Exemple de condition"
+
+    $condVar = 5
+
+    if $condVar < 6 then
+      p@"Ceci s'affiche sous condition 1"
+    else
+      p@"Ceci s'affiche sous condition 2"
+    endif
+
+    $condVar = $condVar + 3
+
+    if $condVar < 6 then
+      p@"Ceci s'affiche sous condition 3"
+    else
+      p@"Ceci s'affiche sous condition 4"
+    endif
 
 
     br
